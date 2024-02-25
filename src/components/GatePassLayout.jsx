@@ -8,14 +8,14 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
   const totalQuantity = formData.items.reduce((total, item) => total + parseInt(item.quantity, 10), 0);
 
   const generatePDF = () => {
-    const { SNo, partyName } = formData;
+    const { GPNo, partyName } = formData;
 
     // Create a new jsPDF instance
     const pdfDoc = new jsPDF();
 
     // Call the autoTable method to generate the table in the PDF
     pdfDoc.autoTable({ html: '#gatePassTablelayout' });
-    const pdfName = `${SNo}-${partyName}-GatePass.pdf`;
+    const pdfName = `${GPNo}-${partyName}-GatePass.pdf`;
 
     // Save the PDF with a specific name
     pdfDoc.save(pdfName);
@@ -36,8 +36,8 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
                   <thead>
                     <tr>
                       <td rowSpan={2} colSpan={4} className='text-center align-middle'><b>GATE PASS</b></td>
-                      <td>SR. NO.</td>
-                      <td>{formData.SNo}</td>
+                      <td>GP NO.</td>
+                      <td>{formData.GPNo}</td>
                     </tr>
                     <tr>
                       <td>Date</td>
@@ -47,7 +47,11 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
                   </thead>
                   <tbody>
                     <tr>
-                      <td colSpan={6} className='text-center'>{formData.partyName}</td>
+                      <td colSpan={6} className='text-center font-weight-bold'>
+                        <b>
+                        {formData.partyName}
+                        </b>
+                        </td>
                     </tr>
                     <tr>
                       <td>S.No.</td>
@@ -79,6 +83,7 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
                       <td rowSpan={5}>Gate approval</td>
                       <td colSpan={2}>Delivered By</td>
                     </tr>
+                    
                     <tr>
                       <td colSpan={2}>Name ..........</td>
                       <td colSpan={2}>Name .........</td>

@@ -1,37 +1,80 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Form, Button, Table, Container, Row, Col, Card, CardBody } from 'react-bootstrap';
-import GatePassLayout from './GatePassLayout';  // Import the GatePassLayout component
+import GatePassLayout from './GatePassLayout';
+import { db } from '../firebase'; // Import the Firestore instance
 
 function GatePassForm() {
-
-  // Ref for the Generate PDF button in GatePassLayout
   const generatePDFButtonRef = useRef(null);
-
-  const generatePDF = () => {
-    // Increment the S.No. before triggering the click
-    setFormInputs((prevInputs) => ({
-      ...prevInputs,
-      SNo: prevInputs.SNo + 1,
-    }));
-
-    // Trigger the "Generate PDF" button click in GatePassLayout
-    if (generatePDFButtonRef.current) {
-      generatePDFButtonRef.current.click();
-    }
-  };
-
   const [formInputs, setFormInputs] = useState({
     partyName: '',
-    SNo: 201, // Starting Value
+    GPNo: '', // Use GPNo from state
     date: '',
     items: [
       { itemName: '', packingStyle: '', quantity: '', rate: '', gst: '' },
     ],
   });
 
+  useEffect(() => {
+    // Fetch the GP number on page load
+    const fetchGPNumber = async () => {
+      try {
+        const doc = await db.collection('auto-gpnumber').doc('doc-gpnumber').get();
+        if (doc.exists) {
+          const currentGPNo = doc.data().gpnumber;
+          setFormInputs(prevState => ({
+            ...prevState,
+            GPNo: currentGPNo
+          }));
+        } else {
+          console.log('No such document!');
+        }
+      } catch (error) {
+        console.error('Error fetching GP number:', error);
+      }
+    };
+
+    fetchGPNumber();
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormInputs({ ...formInputs, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Increment GP number locally before updating in Firestore
+    const updatedGPNo = parseInt(formInputs.GPNo) + 1;
+
+    // Update GP No. in Firestore
+    try {
+      await db.collection('gatePasses').add({
+        partyName: formInputs.partyName,
+        GPNo: updatedGPNo,
+        date: new Date(),
+        // Add other data as needed
+      });
+
+      await db.collection('auto-gpnumber').doc('doc-gpnumber').update({
+        gpnumber: updatedGPNo,
+      });
+
+      console.log('Data stored in Firestore');
+    } catch (error) {
+      console.error('Error storing data in Firestore:', error);
+    }
+
+    // Generate PDF
+    generatePDF();
+  };
+
+  const generatePDF = () => {
+    // You can implement PDF generation here if needed
+    // Example: Trigger the "Generate PDF" button click in GatePassLayout
+    if (generatePDFButtonRef.current) {
+      generatePDFButtonRef.current.click();
+    }
   };
 
   const handleItemChange = (index, e) => {
@@ -60,7 +103,7 @@ function GatePassForm() {
         <Col>
           <Card className='my-3 shadow'>
             <CardBody>
-              <Form>
+              <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="formPartyName">
                   <Form.Label>Party Name</Form.Label>
                   <Form.Control
@@ -72,87 +115,86 @@ function GatePassForm() {
                   />
                 </Form.Group>
 
-                <Form.Group controlId="formSNo">
-                  <Form.Label>SR. No.</Form.Label>
+                <Form.Group controlId="formGPNo">
+                  <Form.Label>GP No.</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Enter S.No."
-                    name="SNo"
-                    value={formInputs.SNo}
+                    placeholder="Enter GP No."
+                    name="GPNo"
+                    value={formInputs.GPNo}
                     onChange={handleInputChange}
-                    // readOnly
                   />
                 </Form.Group>
 
                 <Table striped responsive bordered hover className='mt-2'>
-              <thead>
-                <tr>
-                  <td style={{ minWidth: '12rem' }}>Item Name</td>
-                  <td style={{ minWidth: '12rem' }}>Packing Style</td>
-                  <td style={{ minWidth: '6rem' }}>Quantity</td>
-                  <td style={{ minWidth: '6rem' }}>Rate</td>
-                  <td style={{ minWidth: '6rem' }}>GST</td>
-                </tr>
-              </thead>
-              <tbody>
-                {formInputs.items.map((item, index) => (
-                  <tr key={index}>
-                    <td>
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter item name"
-                        name="itemName"
-                        value={item.itemName}
-                        onChange={(e) => handleItemChange(index, e)}
-                      />
-                    </td>
-                    <td>
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter packing style"
-                        name="packingStyle"
-                        value={item.packingStyle}
-                        onChange={(e) => handleItemChange(index, e)}
-                      />
-                    </td>
-                    <td>
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter quantity"
-                        name="quantity"
-                        value={item.quantity}
-                        onChange={(e) => handleItemChange(index, e)}
-                      />
-                    </td>
-                    <td>
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter rate"
-                        name="rate"
-                        value={item.rate}
-                        onChange={(e) => handleItemChange(index, e)}
-                      />
-                    </td>
-                    <td>
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter GST"
-                        name="gst"
-                        value={item.gst}
-                        onChange={(e) => handleItemChange(index, e)}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+                  <thead>
+                    <tr>
+                      <td style={{ minWidth: '12rem' }}>Item Name</td>
+                      <td style={{ minWidth: '12rem' }}>Packing Style</td>
+                      <td style={{ minWidth: '6rem' }}>Quantity</td>
+                      <td style={{ minWidth: '6rem' }}>Rate</td>
+                      <td style={{ minWidth: '6rem' }}>GST</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {formInputs.items.map((item, index) => (
+                      <tr key={index}>
+                        <td>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter item name"
+                            name="itemName"
+                            value={item.itemName}
+                            onChange={(e) => handleItemChange(index, e)}
+                          />
+                        </td>
+                        <td>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter packing style"
+                            name="packingStyle"
+                            value={item.packingStyle}
+                            onChange={(e) => handleItemChange(index, e)}
+                          />
+                        </td>
+                        <td>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter quantity"
+                            name="quantity"
+                            value={item.quantity}
+                            onChange={(e) => handleItemChange(index, e)}
+                          />
+                        </td>
+                        <td>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter rate"
+                            name="rate"
+                            value={item.rate}
+                            onChange={(e) => handleItemChange(index, e)}
+                          />
+                        </td>
+                        <td>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter GST"
+                            name="gst"
+                            value={item.gst}
+                            onChange={(e) => handleItemChange(index, e)}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
 
                 <Button variant="primary" onClick={addItem} className='m-2'>
                   Add Item
                 </Button>
 
-                <Button variant="success" onClick={generatePDF} className="ml-2">
-                  Generate PDF
+                <Button variant="success" type="submit" className="ml-2">
+                  Submit
                 </Button>
               </Form>
             </CardBody>
