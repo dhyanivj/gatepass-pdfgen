@@ -32,7 +32,7 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
           <Form>
             <Row className="justify-content-md-center ">
               <Col>
-                <Table bordered id='gatePassTablelayout'>
+                <Table responsive bordered id='gatePassTablelayout'>
                   <thead>
                     <tr>
                       <td rowSpan={2} colSpan={4} className='text-center align-middle'><b>GATE PASS</b></td>

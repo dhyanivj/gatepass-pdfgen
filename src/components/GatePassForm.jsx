@@ -84,14 +84,14 @@ function GatePassForm() {
                   />
                 </Form.Group>
 
-                <Table striped bordered hover className='mt-2'>
+                <Table striped responsive bordered hover className='mt-2'>
               <thead>
                 <tr>
-                  <td>Item Name</td>
-                  <td>Packing Style</td>
-                  <td>Quantity</td>
-                  <td>Rate</td>
-                  <td>GST</td>
+                  <td style={{ minWidth: '12rem' }}>Item Name</td>
+                  <td style={{ minWidth: '12rem' }}>Packing Style</td>
+                  <td style={{ minWidth: '6rem' }}>Quantity</td>
+                  <td style={{ minWidth: '6rem' }}>Rate</td>
+                  <td style={{ minWidth: '6rem' }}>GST</td>
                 </tr>
               </thead>
               <tbody>
