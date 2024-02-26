@@ -27,11 +27,19 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
       orientation: "landscape",
     });
 
+    // Define the column styles
+    const columnStyles = {
+      // 0: { halign: "center", fillColor: [0, 255, 0] },
+    };
+
     // Call the autoTable method to generate the table in the PDF
     pdfDoc.autoTable({
       html: "#gatePassTablelayout",
       theme: "grid",
+      // columnStyles: { 0: { halign: 'center', fillColor: [0, 255, 0] } },
+      columnStyles: columnStyles,
     });
+
     const pdfName = `${GPNo}-${partyName}-GatePass.pdf`;
 
     // Save the PDF with a specific name
