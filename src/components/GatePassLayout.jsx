@@ -62,16 +62,9 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
                     <td
                       rowSpan={2}
                       colSpan={4}
-                      className="text-center align-middle gate-pass-cell"
+                      className="text-center align-middle gate-pass-cell  gatepasstext"
                     >
-                      <div
-                        className="gatepasstext"
-                        style={{
-                          fontWeight: "bold",
-                        }}
-                      >
-                        <b>GATE PASS</b>
-                      </div>
+                      GATE PASS
                     </td>
                     <td>GP NO.</td>
                     <td>{formData.GPNo}</td>
@@ -116,25 +109,26 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
                     </tr>
                     <tr>
                       <td rowSpan={5}>Account's approval</td>
-                      <td colSpan={2}>Delivered By</td>
+                      <td>Delivered By</td>
+                      {/* blank */}
+                      <td rowSpan={5}></td>
                       <td rowSpan={5}>Gate approval</td>
                       <td colSpan={2}>Delivered By</td>
                     </tr>
-
                     <tr>
-                      <td colSpan={2}>Name ..........</td>
+                      <td>Name ..............................</td>
                       <td colSpan={2}>Name .........</td>
                     </tr>
                     <tr>
-                      <td colSpan={2}>Phone No. ..........</td>
+                      <td>Phone No. ..............................</td>
                       <td colSpan={2}>Phone No. .........</td>
                     </tr>
                     <tr>
-                      <td colSpan={2}>Signature ..........</td>
+                      <td>Signature ..............................</td>
                       <td colSpan={2}>Signature .........</td>
                     </tr>
                     <tr>
-                      <td colSpan={2}>Vehicle ..........</td>
+                      <td>Vehicle ..............................</td>
                       <td colSpan={2}>Stamp .........</td>
                     </tr>
                   </tbody>

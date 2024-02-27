@@ -220,9 +220,9 @@ function GatePassForm() {
           </div>
         </Col>
       </Row>
-      <div className="d-none">
-        <GatePassLayout formData={formInputs} ref={generatePDFButtonRef} />
-      </div>
+      {/* <div className="d-none"> */}
+      <GatePassLayout formData={formInputs} ref={generatePDFButtonRef} />
+      {/* </div> */}
     </Container>
   );
 }
