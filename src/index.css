@@ -28,3 +28,15 @@ body {
 .logo{
     width: 12rem;
 }
+
+.gatepasstext{
+    vertical-align: center;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#gatePassTablelayout td{
+    padding-left: 5px;
+    vertical-align: super;
+}

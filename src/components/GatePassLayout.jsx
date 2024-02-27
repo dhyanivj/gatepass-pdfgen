@@ -27,17 +27,11 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
       orientation: "landscape",
     });
 
-    // Define the column styles
-    const columnStyles = {
-      // 0: { halign: "center", fillColor: [0, 255, 0] },
-    };
-
     // Call the autoTable method to generate the table in the PDF
     pdfDoc.autoTable({
       html: "#gatePassTablelayout",
       theme: "grid",
-      // columnStyles: { 0: { halign: 'center', fillColor: [0, 255, 0] } },
-      columnStyles: columnStyles,
+      useCss: true,
     });
 
     const pdfName = `${GPNo}-${partyName}-GatePass.pdf`;
@@ -63,14 +57,21 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
           <Form>
             <Row className="justify-content-md-center ">
               <Col>
-                <Table responsive bordered id="gatePassTablelayout">
+                <table border={1} id="gatePassTablelayout">
                   <tr>
                     <td
                       rowSpan={2}
                       colSpan={4}
                       className="text-center align-middle gate-pass-cell"
                     >
-                      <b>GATE PASS</b>
+                      <div
+                        className="gatepasstext"
+                        style={{
+                          fontWeight: "bold",
+                        }}
+                      >
+                        <b>GATE PASS</b>
+                      </div>
                     </td>
                     <td>GP NO.</td>
                     <td>{formData.GPNo}</td>
@@ -82,7 +83,10 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
 
                   <tbody>
                     <tr>
-                      <td colSpan={6} className="text-center font-weight-bold">
+                      <td
+                        colSpan={6}
+                        className="text-center font-weight-bold gatepasstext"
+                      >
                         <b>{formData.partyName}</b>
                       </td>
                     </tr>
@@ -134,7 +138,7 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
                       <td colSpan={2}>Stamp .........</td>
                     </tr>
                   </tbody>
-                </Table>
+                </table>
 
                 <Button
                   variant="success"

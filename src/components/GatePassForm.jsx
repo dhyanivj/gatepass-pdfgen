@@ -121,6 +121,7 @@ function GatePassForm() {
                   name="partyName"
                   value={formInputs.partyName}
                   onChange={handleInputChange}
+                  required
                 />
               </Form.Group>
 
