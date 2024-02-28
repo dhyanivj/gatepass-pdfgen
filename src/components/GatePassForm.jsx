@@ -51,13 +51,14 @@ function GatePassForm() {
 
     // Increment GP number locally before updating in Firestore
     const updatedGPNo = parseInt(formInputs.GPNo) + 1;
-
     // Update GP No. in Firestore
     try {
       await db.collection("gatePasses").add({
         partyName: formInputs.partyName,
-        GPNo: updatedGPNo,
+        GPNo: formInputs.GPNo,
         date: new Date(),
+        items: formInputs.items,
+        pdfName: `${formInputs.GPNo}-${formInputs.partyName}-GatePass.pdf`,
         // Add other data as needed
       });
 
@@ -73,9 +74,9 @@ function GatePassForm() {
     // Generate PDF
     generatePDF();
     // Reload the page after a delay to allow time for PDF download
-    setTimeout(() => {
-      window.location.reload();
-    }, 500); // Adjust the delay as needed
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 500); // Adjust the delay as needed
   };
 
   const generatePDF = async () => {
