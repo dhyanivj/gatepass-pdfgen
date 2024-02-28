@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Form, Button, Table, Container, Row, Col } from "react-bootstrap";
 import GatePassLayout from "./GatePassLayout";
-import { db } from "../firebase"; // Import the Firestore instance
+import { db, storage } from "../firebase"; // Import the Firestore instance
 import Logo from "./gatepass-logo.png";
+import jsPDF from "jspdf";
+
 function GatePassForm() {
   const generatePDFButtonRef = useRef(null);
   const [formInputs, setFormInputs] = useState({
@@ -76,11 +78,34 @@ function GatePassForm() {
     }, 500); // Adjust the delay as needed
   };
 
-  const generatePDF = () => {
-    // You can implement PDF generation here if needed
-    // Example: Trigger the "Generate PDF" button click in GatePassLayout
-    if (generatePDFButtonRef.current) {
-      generatePDFButtonRef.current.click();
+  const generatePDF = async () => {
+    const pdf = new jsPDF({
+      orientation: "landscape",
+    });
+    // pdf.text("Gate Pass Form", 15, 15);
+    // Add more content to the PDF as needed based on your layout
+    pdf.autoTable({
+      html: "#gatePassTablelayout",
+      theme: "grid",
+      useCss: true,
+    });
+    // Save PDF to Firebase Storage
+    const pdfBlob = pdf.output("blob");
+    const storageRef = storage.ref();
+    const pdfFileName = `${formInputs.GPNo}-${formInputs.partyName}-GatePass.pdf`;
+    const pdfFileRef = storageRef.child(pdfFileName);
+
+    try {
+      // Upload the PDF blob to Firebase Storage
+      await pdfFileRef.put(pdfBlob);
+      console.log("PDF uploaded to Firebase Storage");
+
+      // Trigger the "Generate PDF" button click in GatePassLayout
+      if (generatePDFButtonRef.current) {
+        generatePDFButtonRef.current.click();
+      }
+    } catch (error) {
+      console.error("Error uploading PDF to Firebase Storage:", error);
     }
   };
 
@@ -106,9 +131,9 @@ function GatePassForm() {
 
   return (
     <Container>
-      <div className="text-center">
+      {/* <div className="text-center">
         <img src={Logo} alt="logo" className="logo my-5" />
-      </div>
+      </div> */}
       <Row>
         <Col>
           <div className="my-3 gatepassform p-3">
@@ -220,9 +245,9 @@ function GatePassForm() {
           </div>
         </Col>
       </Row>
-      <div className="d-none">
-        <GatePassLayout formData={formInputs} ref={generatePDFButtonRef} />
-      </div>
+      {/* <div className="d-none"> */}
+      <GatePassLayout formData={formInputs} ref={generatePDFButtonRef} />
+      {/* </div> */}
     </Container>
   );
 }
