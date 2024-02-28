@@ -174,7 +174,7 @@ function GatePassList() {
 
     try {
       // Upload the updated PDF blob to Firebase Storage
-      await pdfFileRef.put(pdfBlob);
+      // await pdfFileRef.put(pdfBlob);
       console.log("Updated PDF uploaded to Firebase Storage");
 
       // Update the PDF filename in Firestore
