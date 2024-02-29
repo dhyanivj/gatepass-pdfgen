@@ -130,6 +130,12 @@ function GatePassForm() {
     });
   };
 
+  const removeItem = (index) => {
+    const updatedItems = [...formInputs.items];
+    updatedItems.splice(index, 1);
+    setFormInputs({ ...formInputs, items: updatedItems });
+  };
+
   return (
     <Container>
       {/* <div className="text-center">
@@ -170,6 +176,7 @@ function GatePassForm() {
                     <td style={{ minWidth: "6rem" }}>Quantity</td>
                     <td style={{ minWidth: "6rem" }}>Rate</td>
                     <td style={{ minWidth: "6rem" }}>GST</td>
+                    <td style={{ minWidth: "6rem" }}>Action</td>
                   </tr>
                 </thead>
                 <tbody>
@@ -219,6 +226,15 @@ function GatePassForm() {
                           value={item.gst}
                           onChange={(e) => handleItemChange(index, e)}
                         />
+                      </td>
+                      <td>
+                        <Button
+                          variant="danger"
+                          onClick={() => removeItem(index)}
+                          className="rounded-pill"
+                        >
+                          Delete
+                        </Button>
                       </td>
                     </tr>
                   ))}
