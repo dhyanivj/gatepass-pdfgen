@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { db, storage } from "../firebase";
 import { Button, Table, Modal, Form } from "react-bootstrap";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
 
 function GatePassList() {
   const [gatePasses, setGatePasses] = useState([]);
@@ -55,13 +58,17 @@ function GatePassList() {
         items: editedForm.items,
         // Add other fields as needed
       });
-
+  
+      // Generate and upload the updated PDF
+      generatePDF();
+  
       // Close the edit modal
       setShowEditModal(false);
     } catch (error) {
       console.error("Error updating gate pass details:", error);
     }
   };
+  
 
   useEffect(() => {
     const fetchGatePasses = async () => {
@@ -166,6 +173,44 @@ function GatePassList() {
       console.error("Error downloading PDF:", error);
     }
   };
+  const generatePDF = () => {
+    // Create a new jsPDF instance
+    const pdfDoc = new jsPDF();
+  
+    // Add content to the PDF
+    pdfDoc.text(`Gate Pass No: ${editedForm.GPNo}`, 10, 10);
+  
+    // Add other details from editedForm as needed
+  
+    // Add a table for items
+    const items = editedForm.items.map((item, index) => [
+      index + 1,
+      item.itemName,
+      item.packingStyle,
+      item.quantity,
+      item.rate,
+      item.gst,
+    ]);
+  
+    pdfDoc.autoTable({
+      head: [["#", "Item Name", "Packing Style", "Quantity", "Rate", "GST"]],
+      body: items,
+    });
+  
+    // Save the PDF to Firebase Storage
+    const pdfFileName = `${editedForm.GPNo}-${editedForm.partyName}-GatePass.pdf`;
+    const storageRef = storage.ref();
+    const pdfFileRef = storageRef.child(pdfFileName);
+  
+    // Convert the PDF to a Blob
+    const pdfBlob = pdfDoc.output("blob");
+  
+    // Upload the Blob to Firebase Storage
+    pdfFileRef.put(pdfBlob).then(() => {
+      console.log("PDF uploaded to Firebase Storage");
+    });
+  };
+  
   const generateUpdatedPDF = async (gatePass) => {
     const updatedPdfFileName = `${gatePass.GPNo}-${gatePass.partyName}-GatePass.pdf`;
     // const pdfBlob = await generatePDFBlob(); // Your existing generatePDF logic
