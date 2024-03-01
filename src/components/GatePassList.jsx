@@ -264,19 +264,18 @@ function GatePassList() {
               <td>{gatePass.GPNo}</td>
               <td>{gatePass.partyName}</td>
               <td>
-                {gatePass.date instanceof Date
-                  ? gatePass.date.toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })
-                  : gatePass.date.toDate().toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })}
-              </td>
-
+              {gatePass.date instanceof Date
+                ? gatePass.date.toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })
+                : gatePass.date?.toDate()?.toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })}
+            </td>
               <td>
                 <Button
                   variant="info"
