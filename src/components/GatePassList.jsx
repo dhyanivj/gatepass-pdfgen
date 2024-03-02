@@ -211,6 +211,17 @@ function GatePassList() {
       console.log("PDF uploaded to Firebase Storage");
     });
   };
+  const totalQuantity = editedForm.items.reduce((total, item) => {
+    const parsedQuantity = parseInt(item.quantity, 10);
+  
+    // Debugging logs
+    console.log("item.quantity:", item.quantity);
+    console.log("parsedQuantity:", parsedQuantity);
+  
+    return total + (isNaN(parsedQuantity) ? 0 : parsedQuantity);
+  }, 0);
+  
+
 
   return (
     <div>
@@ -568,8 +579,7 @@ function GatePassList() {
             <td colSpan={2}></td>
             <td>Total</td>
             <td>
-              total
-              {/* {totalQuantity} */}
+              {totalQuantity}
             </td>
             <td colSpan={2}></td>
           </tr>
