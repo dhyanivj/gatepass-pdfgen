@@ -37,12 +37,14 @@ body {
     text-transform: uppercase;
 }
 
-#gatePassTablelayout td{
+#gatePassTablelayout td,
+#newgatePassTable td{
     padding-left: 5px;
     vertical-align: super;
 }
 
 
-#gatePassTablelayout tr td {
+#gatePassTablelayout tr td,
+#newgatePassTable tr td {
     border: 1px solid black;
   }

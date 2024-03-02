@@ -12,6 +12,8 @@ function GatePassList() {
   const [selectedGatePass, setSelectedGatePass] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editedGatePass, setEditedGatePass] = useState(null);
+  const [editedDate, setEditedDate] = useState("");
+
   const [editedForm, setEditedForm] = useState({
     partyName: "",
     GPNo: "",
@@ -55,6 +57,7 @@ function GatePassList() {
         partyName: editedForm.partyName,
         GPNo: editedForm.GPNo,
         items: editedForm.items,
+        date: new Date(editedDate), 
         // Add other fields as needed
       });
 
@@ -67,7 +70,6 @@ function GatePassList() {
       console.error("Error updating gate pass details:", error);
     }
   };
-
   useEffect(() => {
     const fetchGatePasses = async () => {
       try {
@@ -77,13 +79,26 @@ function GatePassList() {
           ...doc.data(),
         }));
         setGatePasses(data);
+  
+        // Fetch the initial date from Firestore for the selected gate pass
+        if (editedGatePass) {
+          const selectedGatePassData = data.find(
+            (gatePass) => gatePass.id === editedGatePass.id
+          );
+          if (selectedGatePassData) {
+            setEditedDate(
+              selectedGatePassData.date?.toDate() || new Date().toISOString()
+            );
+          }
+        }
       } catch (error) {
         console.error("Error fetching gate passes:", error);
       }
     };
-
+  
     fetchGatePasses();
-  }, []);
+  }, [editedGatePass]);
+  
 
   const toggleSelectAll = () => {
     setSelectAll(!selectAll);
@@ -177,15 +192,6 @@ function GatePassList() {
       orientation: "landscape",
     });
 
-    // Add a table for items
-    const items = editedForm.items.map((item, index) => [
-      index + 1,
-      item.itemName,
-      item.packingStyle,
-      item.quantity,
-      item.rate,
-      item.gst,
-    ]);
     pdfDoc.autoTable({
       html: "#newgatePassTable",
       theme: "grid",
@@ -204,28 +210,6 @@ function GatePassList() {
     pdfFileRef.put(pdfBlob).then(() => {
       console.log("PDF uploaded to Firebase Storage");
     });
-  };
-
-  const generateUpdatedPDF = async (gatePass) => {
-    const updatedPdfFileName = `${gatePass.GPNo}-${gatePass.partyName}-GatePass.pdf`;
-    // const pdfBlob = await generatePDFBlob(); // Your existing generatePDF logic
-    const storageRef = storage.ref();
-    const pdfFileRef = storageRef.child(updatedPdfFileName);
-
-    try {
-      // Upload the updated PDF blob to Firebase Storage
-      // await pdfFileRef.put(pdfBlob);
-      console.log("Updated PDF uploaded to Firebase Storage");
-
-      // Update the PDF filename in Firestore
-      await db.collection("gatePasses").doc(gatePass.id).update({
-        pdfFileName: updatedPdfFileName,
-      });
-
-      console.log("PDF filename updated in Firestore");
-    } catch (error) {
-      console.error("Error uploading updated PDF to Firebase Storage:", error);
-    }
   };
 
   return (
@@ -413,6 +397,15 @@ function GatePassList() {
                 onChange={handleInputChange}
               />
             </Form.Group>
+            <Form.Group controlId="formDate">
+  <Form.Label>Date</Form.Label>
+  <Form.Control
+    type="date"
+    name="date"
+    value={editedDate}
+    onChange={(e) => setEditedDate(e.target.value)}
+  />
+</Form.Group>
 
             <Form.Group controlId="formGPNo">
               <Form.Label>GP No.</Form.Label>
@@ -534,12 +527,15 @@ function GatePassList() {
           <td>{editedForm.GPNo}</td>
         </tr>
         <tr>
-          <td>Date</td>
-          <td>
-            data yaha
-            {/* {todayDate} */}
-          </td>
-        </tr>
+  <td>Date</td>
+  <td>
+    {editedDate ? new Date(editedDate).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }) : ''}
+  </td>
+</tr>
 
         <tbody>
           <tr>
