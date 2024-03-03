@@ -1,14 +1,4 @@
 import React, { forwardRef } from "react";
-import {
-  Container,
-  // Table,
-  Form,
-  Row,
-  Col,
-  Card,
-  CardBody,
-  Button,
-} from "react-bootstrap";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
@@ -51,18 +41,21 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
     .join("-");
 
   return (
-    <Container>
-      <Card className="my-5">
-        <CardBody>
-          <Form>
-            <Row className="justify-content-md-center ">
-              <Col>
-                <table border={1} id="gatePassTablelayout">
+    <div className="container mx-auto">
+      <div className="my-5">
+        <form>
+          <div className="flex justify-center">
+            <div className="w-full">
+              <table
+                className="border-collapse border w-full"
+                id="gatePassTablelayout"
+              >
+                <thead>
                   <tr>
                     <td
-                      rowSpan={2}
                       colSpan={4}
-                      className="text-center align-middle gate-pass-cell  gatepasstext"
+                      rowSpan={2}
+                      className="text-center align-middle gate-pass-cell gatepasstext border"
                     >
                       GATE PASS
                     </td>
@@ -73,81 +66,79 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
                     <td>Date</td>
                     <td>{todayDate}</td>
                   </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td
+                      colSpan={6}
+                      className="text-center font-semibold gatepasstext"
+                    >
+                      {formData.partyName}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>S.No.</td>
+                    <td>Item Name</td>
+                    <td>Packing Style</td>
+                    <td>Qty.</td>
+                    <td>Rate</td>
+                    <td>GST</td>
+                  </tr>
+                  {formData.items.map((item, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{item.itemName}</td>
+                      <td>{item.packingStyle}</td>
+                      <td>{item.quantity}</td>
+                      <td>{item.rate}</td>
+                      <td>{item.gst}</td>
+                    </tr>
+                  ))}
+                  <tr>
+                    <td colSpan={2}></td>
+                    <td>Total</td>
+                    <td>{totalQuantity}</td>
+                    <td colSpan={2}></td>
+                  </tr>
+                  <tr>
+                    <td rowSpan={5}>Account's approval</td>
+                    <td>Delivered By</td>
+                    <td rowSpan={5}></td>
+                    <td rowSpan={5}>Gate approval</td>
+                    <td colSpan={2}>Delivered By</td>
+                  </tr>
+                  <tr>
+                    <td>Name ..............................</td>
+                    <td colSpan={2}>Name .........</td>
+                  </tr>
+                  <tr>
+                    <td>Phone No. ..............................</td>
+                    <td colSpan={2}>Phone No. .........</td>
+                  </tr>
+                  <tr>
+                    <td>Signature ..............................</td>
+                    <td colSpan={2}>Signature .........</td>
+                  </tr>
+                  <tr>
+                    <td>Vehicle ..............................</td>
+                    <td colSpan={2}>Stamp .........</td>
+                  </tr>
+                </tbody>
+              </table>
 
-                  <tbody>
-                    <tr>
-                      <td
-                        colSpan={6}
-                        className="text-center font-weight-bold gatepasstext"
-                      >
-                        <b>{formData.partyName}</b>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>S.No.</td>
-                      <td>Item Name</td>
-                      <td>Packing Style</td>
-                      <td>Qty.</td>
-                      <td>Rate</td>
-                      <td>GST</td>
-                    </tr>
-                    {formData.items.map((item, index) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{item.itemName}</td>
-                        <td>{item.packingStyle}</td>
-                        <td>{item.quantity}</td>
-                        <td>{item.rate}</td>
-                        <td>{item.gst}</td>
-                      </tr>
-                    ))}
-                    <tr>
-                      <td colSpan={2}></td>
-                      <td>Total</td>
-                      <td>{totalQuantity}</td>
-                      <td colSpan={2}></td>
-                    </tr>
-                    <tr>
-                      <td rowSpan={5}>Account's approval</td>
-                      <td>Delivered By</td>
-                      {/* blank */}
-                      <td rowSpan={5}></td>
-                      <td rowSpan={5}>Gate approval</td>
-                      <td colSpan={2}>Delivered By</td>
-                    </tr>
-                    <tr>
-                      <td>Name ..............................</td>
-                      <td colSpan={2}>Name .........</td>
-                    </tr>
-                    <tr>
-                      <td>Phone No. ..............................</td>
-                      <td colSpan={2}>Phone No. .........</td>
-                    </tr>
-                    <tr>
-                      <td>Signature ..............................</td>
-                      <td colSpan={2}>Signature .........</td>
-                    </tr>
-                    <tr>
-                      <td>Vehicle ..............................</td>
-                      <td colSpan={2}>Stamp .........</td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                <Button
-                  variant="success"
-                  onClick={generatePDF}
-                  ref={ref}
-                  className="ml-2"
-                >
-                  Generate PDF
-                </Button>
-              </Col>
-            </Row>
-          </Form>
-        </CardBody>
-      </Card>
-    </Container>
+              <button
+                type="button"
+                onClick={generatePDF}
+                ref={ref}
+                className="bg-green-500 text-white px-4 py-2 rounded-full ml-2"
+              >
+                Generate PDF
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 });
 

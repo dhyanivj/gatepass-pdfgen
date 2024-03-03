@@ -1,15 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Form, Button, Table, Container, Row, Col } from "react-bootstrap";
 import GatePassLayout from "./GatePassLayout";
-import { db, storage } from "../firebase"; // Import the Firestore instance
+import { db, storage } from "../firebase";
 import Logo from "./gatepass-logo.png";
 import jsPDF from "jspdf";
-
+import { Input } from "@nextui-org/react";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableColumn,
+  TableRow,
+  TableCell,
+} from "@nextui-org/react";
 function GatePassForm() {
   const generatePDFButtonRef = useRef(null);
   const [formInputs, setFormInputs] = useState({
     partyName: "",
-    GPNo: "", // Use GPNo from state
+    GPNo: "",
     date: "",
     items: [
       { itemName: "", packingStyle: "", quantity: "", rate: "", gst: "" },
@@ -137,135 +144,136 @@ function GatePassForm() {
   };
 
   return (
-    <Container>
+    <div className="container mx-auto">
       {/* <div className="text-center">
         <img src={Logo} alt="logo" className="logo my-5" />
       </div> */}
-      <Row>
-        <Col>
+      <div className="flex">
+        <div className="flex-1">
           <div className="my-3 gatepassform p-3">
-            <Form onSubmit={handleSubmit}>
-              <Form.Group controlId="formPartyName">
-                <Form.Label>Party Name</Form.Label>
-                <Form.Control
+            <form onSubmit={handleSubmit}>
+              <div className="my-3">
+                <Input
                   type="text"
-                  placeholder="Enter party name"
+                  label="Party Name"
                   name="partyName"
                   value={formInputs.partyName}
                   onChange={handleInputChange}
                   required
                 />
-              </Form.Group>
+              </div>
 
-              <Form.Group controlId="formGPNo" className="mt-2">
-                <Form.Label>GP No.</Form.Label>
-                <Form.Control
+              <div className="mb-3">
+                <Input
                   type="text"
-                  placeholder="Enter GP No."
+                  label="GP No."
+                  isReadOnly
                   name="GPNo"
                   value={formInputs.GPNo}
                   onChange={handleInputChange}
+                  required
                 />
-              </Form.Group>
+              </div>
 
-              <Table striped responsive bordered className="mt-2">
-                <thead>
-                  <tr>
-                    <td style={{ minWidth: "12rem" }}>Item Name</td>
-                    <td style={{ minWidth: "12rem" }}>Packing Style</td>
-                    <td style={{ minWidth: "6rem" }}>Quantity</td>
-                    <td style={{ minWidth: "6rem" }}>Rate</td>
-                    <td style={{ minWidth: "6rem" }}>GST</td>
-                    <td style={{ minWidth: "6rem" }}>Action</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {formInputs.items.map((item, index) => (
-                    <tr key={index}>
-                      <td>
-                        <Form.Control
-                          type="text"
-                          placeholder="Enter item name"
-                          name="itemName"
-                          value={item.itemName}
-                          onChange={(e) => handleItemChange(index, e)}
-                        />
-                      </td>
-                      <td>
-                        <Form.Control
-                          type="text"
-                          placeholder="Enter packing style"
-                          name="packingStyle"
-                          value={item.packingStyle}
-                          onChange={(e) => handleItemChange(index, e)}
-                        />
-                      </td>
-                      <td>
-                        <Form.Control
-                          type="text"
-                          placeholder="Enter quantity"
-                          name="quantity"
-                          value={item.quantity}
-                          onChange={(e) => handleItemChange(index, e)}
-                        />
-                      </td>
-                      <td>
-                        <Form.Control
-                          type="text"
-                          placeholder="Enter rate"
-                          name="rate"
-                          value={item.rate}
-                          onChange={(e) => handleItemChange(index, e)}
-                        />
-                      </td>
-                      <td>
-                        <Form.Control
-                          type="text"
-                          placeholder="Enter GST"
-                          name="gst"
-                          value={item.gst}
-                          onChange={(e) => handleItemChange(index, e)}
-                        />
-                      </td>
-                      <td>
-                        <Button
-                          variant="danger"
-                          onClick={() => removeItem(index)}
-                          className="rounded-pill"
-                        >
-                          Delete
-                        </Button>
-                      </td>
+              <div className="mb-4">
+                <table className="w-full border">
+                  <thead>
+                    <tr>
+                      <td className="min-w-48">Item Name</td>
+                      <td className="min-w-48">Packing Style</td>
+                      <td className="min-w-24">Quantity</td>
+                      <td className="min-w-24">Rate</td>
+                      <td className="min-w-24">GST</td>
+                      <td className="min-w-24">Action</td>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
+                  </thead>
+                  <tbody>
+                    {formInputs.items.map((item, index) => (
+                      <tr key={index}>
+                        <td>
+                          <Input
+                            type="text"
+                            placeholder="Enter item name"
+                            name="itemName"
+                            value={item.itemName}
+                            onChange={(e) => handleItemChange(index, e)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            type="text"
+                            placeholder="Enter packing style"
+                            name="packingStyle"
+                            value={item.packingStyle}
+                            onChange={(e) => handleItemChange(index, e)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            type="text"
+                            placeholder="Enter quantity"
+                            name="quantity"
+                            value={item.quantity}
+                            onChange={(e) => handleItemChange(index, e)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            type="text"
+                            placeholder="Enter rate"
+                            name="rate"
+                            value={item.rate}
+                            onChange={(e) => handleItemChange(index, e)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            type="text"
+                            placeholder="Enter GST"
+                            name="gst"
+                            value={item.gst}
+                            onChange={(e) => handleItemChange(index, e)}
+                          />
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            onClick={() => removeItem(index)}
+                            className="bg-red-500 text-white px-4 py-2 rounded-full"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-              <div className="mx-auto text-center mt-3 p-2">
-                <Button
-                  variant="primary"
+              <div className="flex justify-center mt-4">
+                <button
+                  type="button"
                   onClick={addItem}
-                  className="m-2 rounded-pill"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-full mr-2"
                 >
                   Add Item
-                </Button>
+                </button>
 
-                <Button
-                  variant="success"
+                <button
                   type="submit"
-                  className="ml-2 rounded-pill"
+                  className="bg-green-500 text-white px-4 py-2 rounded-full"
                 >
                   Download PDF
-                </Button>
+                </button>
               </div>
-            </Form>
+            </form>
           </div>
-        </Col>
-      </Row>
+        </div>
+      </div>
       {/* <div className="d-none"> */}
       <GatePassLayout formData={formInputs} ref={generatePDFButtonRef} />
       {/* </div> */}
-    </Container>
+    </div>
   );
 }
 
