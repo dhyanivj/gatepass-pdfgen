@@ -59,6 +59,7 @@ function GatePassForm() {
         date: new Date(),
         items: formInputs.items,
         pdfName: `${formInputs.GPNo}-${formInputs.partyName}-GatePass.pdf`,
+        DeliveryStatus: "NotDelivered",
         // Add other data as needed
       });
 
@@ -125,7 +126,13 @@ function GatePassForm() {
       ...formInputs,
       items: [
         ...formInputs.items,
-        { itemName: "", packingStyle: "", quantity: "", rate: "", gst: "" },
+        {
+          itemName: "",
+          packingStyle: "",
+          quantity: "",
+          rate: "",
+          gst: "",
+        },
       ],
     });
   };

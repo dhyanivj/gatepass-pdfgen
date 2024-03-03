@@ -3,10 +3,12 @@ import { db, storage } from "../firebase";
 import { Button, Table, Modal, Form } from "react-bootstrap";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import EditedPdfLayout from "./EditedPdfLayout";
 
 function GatePassList() {
   const [gatePasses, setGatePasses] = useState([]);
   const [selectedGatePasses, setSelectedGatePasses] = useState([]);
+  const [deliveryStatus, setDeliveryStatus] = useState({});
   const [selectAll, setSelectAll] = useState(false);
   const [sortOrder, setSortOrder] = useState("asc");
   const [selectedGatePass, setSelectedGatePass] = useState(null);
@@ -53,13 +55,16 @@ function GatePassList() {
   const handleEdit = async () => {
     try {
       // Update the gate pass details in Firestore
-      await db.collection("gatePasses").doc(editedGatePass.id).update({
-        partyName: editedForm.partyName,
-        GPNo: editedForm.GPNo,
-        items: editedForm.items,
-        date: new Date(editedDate), 
-        // Add other fields as needed
-      });
+      await db
+        .collection("gatePasses")
+        .doc(editedGatePass.id)
+        .update({
+          partyName: editedForm.partyName,
+          GPNo: editedForm.GPNo,
+          items: editedForm.items,
+          date: new Date(editedDate),
+          // Add other fields as needed
+        });
 
       // Generate and upload the updated PDF
       generatePDF();
@@ -79,7 +84,7 @@ function GatePassList() {
           ...doc.data(),
         }));
         setGatePasses(data);
-  
+
         // Fetch the initial date from Firestore for the selected gate pass
         if (editedGatePass) {
           const selectedGatePassData = data.find(
@@ -89,16 +94,27 @@ function GatePassList() {
             setEditedDate(
               selectedGatePassData.date?.toDate() || new Date().toISOString()
             );
+
+            // Fetch the delivery status directly
+            const deliveryStatusSnapshot = await db
+              .collection("gatePasses")
+              .doc(editedGatePass.id)
+              .get();
+            const initialDeliveryStatus =
+              deliveryStatusSnapshot.data()?.DeliveryStatus || "NotDelivered";
+
+            setDeliveryStatus({
+              [editedGatePass.id]: initialDeliveryStatus,
+            });
           }
         }
       } catch (error) {
         console.error("Error fetching gate passes:", error);
       }
     };
-  
+
     fetchGatePasses();
   }, [editedGatePass]);
-  
 
   const toggleSelectAll = () => {
     setSelectAll(!selectAll);
@@ -211,18 +227,22 @@ function GatePassList() {
       console.log("PDF uploaded to Firebase Storage");
     });
   };
-  const totalQuantity = editedForm.items.reduce((total, item) => {
-    const parsedQuantity = parseInt(item.quantity, 10);
-  
-    // Debugging logs
-    console.log("item.quantity:", item.quantity);
-    console.log("parsedQuantity:", parsedQuantity);
-  
-    return total + (isNaN(parsedQuantity) ? 0 : parsedQuantity);
-  }, 0);
-  
+  const handleDeliveryStatusChange = async (gatePassId, newStatus) => {
+    try {
+      // Update the gate pass delivery status in Firestore
+      await db.collection("gatePasses").doc(gatePassId).update({
+        DeliveryStatus: newStatus,
+      });
 
-
+      // Update the local state with the new delivery status
+      setDeliveryStatus({
+        ...deliveryStatus,
+        [gatePassId]: newStatus,
+      });
+    } catch (error) {
+      console.error("Error updating delivery status:", error);
+    }
+  };
   return (
     <div>
       <h1>Gate Pass List</h1>
@@ -282,7 +302,7 @@ function GatePassList() {
 
             <th>PDF Download</th>
             <th>Edit</th>
-            <th>Remark</th>
+            <th>Delivery Status</th>
           </tr>
         </thead>
         <tbody>
@@ -347,7 +367,33 @@ function GatePassList() {
                   Edit
                 </Button>
               </td>
-              {/* Add edit and remark buttons and handlers */}
+
+              <td>
+                <td>
+                  {/* Delivery status dropdown */}
+                  <select
+                    className="form-select"
+                    aria-label="Delivery status"
+                    value={deliveryStatus[gatePass.id]}
+                    onChange={(e) =>
+                      handleDeliveryStatusChange(gatePass.id, e.target.value)
+                    }
+                  >
+                    <option
+                      value="NotDelivered"
+                      selected={gatePass.DeliveryStatus === "NotDelivered"}
+                    >
+                      Not Delivered
+                    </option>
+                    <option
+                      value="Delivered"
+                      selected={gatePass.DeliveryStatus === "Delivered"}
+                    >
+                      Delivered
+                    </option>
+                  </select>
+                </td>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -391,7 +437,6 @@ function GatePassList() {
       </Modal>
 
       {/* Modal for editing gate pass details */}
-      {/* Modal for editing gate pass details */}
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Gate Pass</Modal.Title>
@@ -409,14 +454,14 @@ function GatePassList() {
               />
             </Form.Group>
             <Form.Group controlId="formDate">
-  <Form.Label>Date</Form.Label>
-  <Form.Control
-    type="date"
-    name="date"
-    value={editedDate}
-    onChange={(e) => setEditedDate(e.target.value)}
-  />
-</Form.Group>
+              <Form.Label>Date</Form.Label>
+              <Form.Control
+                type="date"
+                name="date"
+                value={editedDate}
+                onChange={(e) => setEditedDate(e.target.value)}
+              />
+            </Form.Group>
 
             <Form.Group controlId="formGPNo">
               <Form.Label>GP No.</Form.Label>
@@ -523,93 +568,8 @@ function GatePassList() {
           </Button>
         </Modal.Footer>
       </Modal>
-
       {/* Table templete start  */}
-      <table border={1} id="newgatePassTable">
-        <tr>
-          <td
-            rowSpan={2}
-            colSpan={4}
-            className="text-center align-middle gate-pass-cell  gatepasstext"
-          >
-            GATE PASS
-          </td>
-          <td>GP NO.</td>
-          <td>{editedForm.GPNo}</td>
-        </tr>
-        <tr>
-  <td>Date</td>
-  <td>
-    {editedDate ? new Date(editedDate).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }) : ''}
-  </td>
-</tr>
-
-        <tbody>
-          <tr>
-            <td
-              colSpan={6}
-              className="text-center font-weight-bold gatepasstext"
-            >
-              <b>{editedForm.partyName}</b>
-            </td>
-          </tr>
-          <tr>
-            <td>S.No.</td>
-            <td>Item Name</td>
-            <td>Packing Style</td>
-            <td>Qty.</td>
-            <td>Rate</td>
-            <td>GST</td>
-          </tr>
-          {editedForm.items.map((item, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{item.itemName}</td>
-              <td>{item.packingStyle}</td>
-              <td>{item.quantity}</td>
-              <td>{item.rate}</td>
-              <td>{item.gst}</td>
-            </tr>
-          ))}
-          <tr>
-            <td colSpan={2}></td>
-            <td>Total</td>
-            <td>
-              {totalQuantity}
-            </td>
-            <td colSpan={2}></td>
-          </tr>
-          <tr>
-            <td rowSpan={5}>Account's approval</td>
-            <td>Delivered By</td>
-            {/* blank */}
-            <td rowSpan={5}></td>
-            <td rowSpan={5}>Gate approval</td>
-            <td colSpan={2}>Delivered By</td>
-          </tr>
-          <tr>
-            <td>Name ..............................</td>
-            <td colSpan={2}>Name .........</td>
-          </tr>
-          <tr>
-            <td>Phone No. ..............................</td>
-            <td colSpan={2}>Phone No. .........</td>
-          </tr>
-          <tr>
-            <td>Signature ..............................</td>
-            <td colSpan={2}>Signature .........</td>
-          </tr>
-          <tr>
-            <td>Vehicle ..............................</td>
-            <td colSpan={2}>Stamp .........</td>
-          </tr>
-        </tbody>
-      </table>
-      {/* Table templete end  */}
+      <EditedPdfLayout editedForm={editedForm} editedDate={editedDate} />
     </div>
   );
 }
