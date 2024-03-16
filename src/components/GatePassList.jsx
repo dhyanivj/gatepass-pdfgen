@@ -270,7 +270,7 @@ function GatePassList() {
     <Container fluid>
     <Table striped bordered hover responsive>
         <thead>
-          <tr>
+          <tr className="gplist-header">
             <th>
               <div className="d-flex">
               <Form.Check
@@ -326,7 +326,7 @@ function GatePassList() {
 
             <th>PDF Download</th>
             <th>Edit</th>
-            <th>Delivery Status</th>
+            <th style={{minWidth:'8rem'}}>Delivery Status</th>
           </tr>
         </thead>
         <tbody>
