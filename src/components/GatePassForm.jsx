@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 function GatePassForm() {
   const generatePDFButtonRef = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [gpNumber, setGPNumber] = useState("");
 
   const [formInputs, setFormInputs] = useState({
     partyName: "",
@@ -21,15 +22,14 @@ function GatePassForm() {
   });
 
   useEffect(() => {
-    // Fetch the GP number on page load
-    const fetchGPNumber = async () => {
-      try {
-        const doc = await db
-          .collection("auto-gpnumber")
-          .doc("doc-gpnumber")
-          .get();
+    // Set up a real-time listener for GP number
+    const unsubscribe = db
+      .collection("auto-gpnumber")
+      .doc("doc-gpnumber")
+      .onSnapshot((doc) => {
         if (doc.exists) {
           const currentGPNo = doc.data().gpnumber;
+          setGPNumber(currentGPNo);
           setFormInputs((prevState) => ({
             ...prevState,
             GPNo: currentGPNo,
@@ -37,12 +37,9 @@ function GatePassForm() {
         } else {
           console.log("No such document!");
         }
-      } catch (error) {
-        console.error("Error fetching GP number:", error);
-      }
-    };
+      });
 
-    fetchGPNumber();
+    return () => unsubscribe();
   }, []);
 
   const handleInputChange = (e) => {
@@ -178,8 +175,7 @@ function GatePassForm() {
                   type="text"
                   placeholder="Enter GP No."
                   name="GPNo"
-                  value={formInputs.GPNo}
-                  onChange={handleInputChange}
+                  value={gpNumber}
                   readOnly
                 />
               </Form.Group>
