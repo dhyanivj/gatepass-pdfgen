@@ -70,7 +70,7 @@ const EditedPdfLayout = ({ editedForm, editedDate }) => {
         <tr>
           <td rowSpan={5}>Account's approval</td>
           <td>Delivered By</td>
-          <td rowSpan={5}></td>
+          <td rowSpan={5}>{editedForm.gpcomment}</td>
           <td rowSpan={5}>Gate approval</td>
           <td colSpan={2}>Delivered By</td>
         </tr>

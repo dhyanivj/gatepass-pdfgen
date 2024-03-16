@@ -14,6 +14,7 @@ function GatePassForm() {
     partyName: "",
     GPNo: "", // Use GPNo from state
     date: "",
+    gpcomment:"",
     items: [
       { itemName: "", packingStyle: "", quantity: "", rate: "", gst: "" },
     ],
@@ -64,6 +65,7 @@ function GatePassForm() {
         items: formInputs.items,
         pdfName: `${formInputs.GPNo}-${formInputs.partyName}-GatePass.pdf`,
         DeliveryStatus: "NotDelivered",
+        comment: formInputs.gpcomment,
         // Add other data as needed
       });
 
@@ -137,6 +139,7 @@ function GatePassForm() {
           quantity: "",
           rate: "",
           gst: "",
+          gpComment:"",
         },
       ],
     });
@@ -178,6 +181,16 @@ function GatePassForm() {
                   value={formInputs.GPNo}
                   onChange={handleInputChange}
                   readOnly
+                />
+              </Form.Group>
+              <Form.Group controlId="gpcomment" className="mt-2">
+                <Form.Label>Comment</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter Comment"
+                  name="gpcomment"
+                  value={formInputs.gpcomment}
+                  onChange={handleInputChange}
                 />
               </Form.Group>
 

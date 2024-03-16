@@ -59,3 +59,7 @@ body {
     text-decoration: none;
     font-weight: 700;
   }
+  .gpcomment-pdffield{
+    max-width: 2rem;
+    line-break: auto;
+  }

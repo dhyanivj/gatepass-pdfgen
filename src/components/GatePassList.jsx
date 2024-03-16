@@ -20,6 +20,7 @@ function GatePassList() {
   const [editedForm, setEditedForm] = useState({
     partyName: "",
     GPNo: "",
+    gpcomment:"",
     items: [],
   });
 
@@ -64,6 +65,7 @@ function GatePassList() {
           GPNo: editedForm.GPNo,
           items: editedForm.items,
           date: new Date(editedDate),
+          comment: editedForm.gpcomment,
           // Add other fields as needed
         });
 
@@ -383,7 +385,9 @@ function GatePassList() {
                     setEditedForm({
                       partyName: gatePass.partyName,
                       GPNo: gatePass.GPNo,
+                      gpcomment: gatePass.comment,
                       items: [...gatePass.items],
+                      // here we will fetch the details from db
                     });
                     setShowEditModal(true);
                   }}
@@ -487,7 +491,16 @@ function GatePassList() {
                 onChange={(e) => setEditedDate(e.target.value)}
               />
             </Form.Group>
-
+            <Form.Group controlId="gpcomment">
+              <Form.Label>Comment</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter comment"
+                name="gpcomment"
+                value={editedForm.gpcomment}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
             <Form.Group controlId="formGPNo">
               <Form.Label>GP No.</Form.Label>
               <Form.Control

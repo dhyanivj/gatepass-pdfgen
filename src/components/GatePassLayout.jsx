@@ -112,7 +112,7 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
                       <td rowSpan={5}>Account's approval</td>
                       <td>Delivered By</td>
                       {/* blank */}
-                      <td rowSpan={5}></td>
+                      <td rowSpan={5} className="gpcomment-pdffield">{formData.gpcomment}</td>
                       <td rowSpan={5}>Gate approval</td>
                       <td colSpan={2}>Delivered By</td>
                     </tr>
