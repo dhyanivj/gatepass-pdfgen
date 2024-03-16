@@ -4,6 +4,7 @@ import GatePassLayout from "./GatePassLayout";
 import { db, storage } from "../firebase"; // Import the Firestore instance
 import Logo from "./gatepass-logo.png";
 import jsPDF from "jspdf";
+import { Link } from "react-router-dom";
 
 function GatePassForm() {
   const generatePDFButtonRef = useRef(null);
@@ -145,9 +146,9 @@ function GatePassForm() {
 
   return (
     <Container>
-      {/* <div className="text-center">
+      <div className="text-center">
         <img src={Logo} alt="logo" className="logo my-5" />
-      </div> */}
+      </div>
       <Row>
         <Col>
           <div className="my-3 gatepassform p-3">
@@ -172,6 +173,7 @@ function GatePassForm() {
                   name="GPNo"
                   value={formInputs.GPNo}
                   onChange={handleInputChange}
+                  readOnly
                 />
               </Form.Group>
 
@@ -194,6 +196,7 @@ function GatePassForm() {
                           type="text"
                           placeholder="Enter item name"
                           name="itemName"
+                          required
                           value={item.itemName}
                           onChange={(e) => handleItemChange(index, e)}
                         />
@@ -248,7 +251,7 @@ function GatePassForm() {
                 </tbody>
               </Table>
 
-              <div className="mx-auto text-center mt-3 p-2">
+              <div className="mx-auto text-center p-2">
                 <Button
                   variant="primary"
                   onClick={addItem}
@@ -269,9 +272,15 @@ function GatePassForm() {
           </div>
         </Col>
       </Row>
-      {/* <div className="d-none"> */}
-      <GatePassLayout formData={formInputs} ref={generatePDFButtonRef} />
-      {/* </div> */}
+
+      <div className="text-center mb-3">
+        <Link to="/gatepasslist">
+          <button className="btn btn-primary rounded">Gate Pass List</button>
+        </Link>
+      </div>
+      <div className="d-none">
+        <GatePassLayout formData={formInputs} ref={generatePDFButtonRef} />
+      </div>
     </Container>
   );
 }

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { db, storage } from "../firebase";
-import { Button, Table, Modal, Form } from "react-bootstrap";
+import { Button, Table, Modal, Form, Container } from "react-bootstrap";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import EditedPdfLayout from "./EditedPdfLayout";
+import { Link } from "react-router-dom";
 
 function GatePassList() {
   const [gatePasses, setGatePasses] = useState([]);
@@ -245,8 +246,16 @@ function GatePassList() {
   };
   return (
     <div>
-      <h1>Gate Pass List</h1>
-      <Table striped bordered hover>
+      <div className="d-flex justify-content-between p-2">
+      <h3>Gate Pass List</h3>
+      <Link to="/">
+      <button className="btn btn-primary rounded">
+        Add Gate Pass
+      </button>
+      </Link>
+      </div>
+    <Container fluid>
+    <Table striped bordered hover responsive>
         <thead>
           <tr>
             <th>
@@ -383,7 +392,7 @@ function GatePassList() {
                       value="NotDelivered"
                       selected={gatePass.DeliveryStatus === "NotDelivered"}
                     >
-                      Not Delivered
+                     Pending
                     </option>
                     <option
                       value="Delivered"
@@ -398,6 +407,7 @@ function GatePassList() {
           ))}
         </tbody>
       </Table>
+    </Container>
 
       {/* Modal for displaying item details */}
       <Modal show={selectedGatePass !== null} onHide={closeDetailsModal}>
@@ -471,6 +481,7 @@ function GatePassList() {
                 name="GPNo"
                 value={editedForm.GPNo}
                 onChange={handleInputChange}
+                readOnly
               />
             </Form.Group>
 
@@ -569,7 +580,9 @@ function GatePassList() {
         </Modal.Footer>
       </Modal>
       {/* Table templete start  */}
+      <div className="d-none">
       <EditedPdfLayout editedForm={editedForm} editedDate={editedDate} />
+      </div>
     </div>
   );
 }

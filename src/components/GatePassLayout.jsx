@@ -51,7 +51,8 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
     .join("-");
 
   return (
-    <Container>
+    // hide for prod -- all items edit PDF table layout
+    <Container> 
       <Card className="my-5">
         <CardBody>
           <Form>
