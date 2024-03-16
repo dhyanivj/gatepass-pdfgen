@@ -11,7 +11,7 @@ function GatePassList() {
   const [selectedGatePasses, setSelectedGatePasses] = useState([]);
   const [deliveryStatus, setDeliveryStatus] = useState({});
   const [selectAll, setSelectAll] = useState(false);
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortOrder, setSortOrder] = useState("desc");
   const [selectedGatePass, setSelectedGatePass] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editedGatePass, setEditedGatePass] = useState(null);
@@ -84,18 +84,22 @@ function GatePassList() {
           id: doc.id,
           ...doc.data(),
         }));
-        setGatePasses(data);
-
+  
+        // Sort gate passes by GP number in descending order
+        const sortedGatePasses = data.sort((a, b) => b.GPNo - a.GPNo);
+        
+        setGatePasses(sortedGatePasses);
+        
         // Fetch the initial date from Firestore for the selected gate pass
         if (editedGatePass) {
-          const selectedGatePassData = data.find(
+          const selectedGatePassData = sortedGatePasses.find(
             (gatePass) => gatePass.id === editedGatePass.id
           );
           if (selectedGatePassData) {
             setEditedDate(
               selectedGatePassData.date?.toDate() || new Date().toISOString()
             );
-
+  
             // Fetch the delivery status directly
             const deliveryStatusSnapshot = await db
               .collection("gatePasses")
@@ -103,7 +107,7 @@ function GatePassList() {
               .get();
             const initialDeliveryStatus =
               deliveryStatusSnapshot.data()?.DeliveryStatus || "NotDelivered";
-
+  
             setDeliveryStatus({
               [editedGatePass.id]: initialDeliveryStatus,
             });
@@ -113,9 +117,11 @@ function GatePassList() {
         console.error("Error fetching gate passes:", error);
       }
     };
-
+  
     fetchGatePasses();
   }, [editedGatePass]);
+  
+  
 
   const toggleSelectAll = () => {
     setSelectAll(!selectAll);
@@ -154,6 +160,9 @@ function GatePassList() {
 
       // Clear selected gate passes
       setSelectedGatePasses([]);
+      setTimeout(() => {
+        window.location.reload();
+      }, 500); 
     } catch (error) {
       console.error("Error deleting gate passes:", error);
     }
@@ -227,6 +236,9 @@ function GatePassList() {
     pdfFileRef.put(pdfBlob).then(() => {
       console.log("PDF uploaded to Firebase Storage");
     });
+    setTimeout(() => {
+      window.location.reload();
+    }, 500); 
   };
   const handleDeliveryStatusChange = async (gatePassId, newStatus) => {
     try {
@@ -250,7 +262,8 @@ function GatePassList() {
       <h3>Gate Pass List</h3>
       <Link to="/">
       <button className="btn btn-primary rounded">
-        Add Gate Pass
+      <i class="fa fa-plus mr-2"></i>
+<span> Add Gate Pass</span>
       </button>
       </Link>
       </div>
@@ -259,6 +272,7 @@ function GatePassList() {
         <thead>
           <tr>
             <th>
+              <div className="d-flex">
               <Form.Check
                 type="checkbox"
                 label=""
@@ -273,8 +287,9 @@ function GatePassList() {
                     selectedGatePasses.length === 0 ? "none" : "inline-block",
                 }}
               >
-                Delete Selected
+                <i class="fa fa-trash"></i>
               </Button>
+              </div>
             </th>
             <th>
               <Button

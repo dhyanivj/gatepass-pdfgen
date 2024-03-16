@@ -8,6 +8,8 @@ import { Link } from "react-router-dom";
 
 function GatePassForm() {
   const generatePDFButtonRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+
   const [formInputs, setFormInputs] = useState({
     partyName: "",
     GPNo: "", // Use GPNo from state
@@ -48,6 +50,7 @@ function GatePassForm() {
   };
 
   const handleSubmit = async (e) => {
+    setLoading(true); 
     e.preventDefault();
 
     // Increment GP number locally before updating in Firestore
@@ -75,10 +78,11 @@ function GatePassForm() {
 
     // Generate PDF
     generatePDF();
+    setLoading(false);
     // Reload the page after a delay to allow time for PDF download
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 500); // Adjust the delay as needed
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000); // Adjust the delay as needed
   };
 
   const generatePDF = async () => {
@@ -265,6 +269,12 @@ function GatePassForm() {
                   type="submit"
                   className="ml-2 rounded-pill"
                 >
+                
+                {loading && (
+        <div className="spinner-border text-white downloading-spinner" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      )}
                   Download PDF
                 </Button>
               </div>

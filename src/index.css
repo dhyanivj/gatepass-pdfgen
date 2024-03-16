@@ -48,3 +48,9 @@ body {
 #newgatePassTable tr td {
     border: 1px solid black;
   }
+
+  .downloading-spinner{
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 10px !important;
+  }
