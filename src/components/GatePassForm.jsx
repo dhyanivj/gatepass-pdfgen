@@ -17,7 +17,7 @@ function GatePassForm() {
     date: "",
     gpcomment:"",
     items: [
-      { itemName: "", packingStyle: "", quantity: "", rate: "", gst: "" },
+      {boxnumber: "", itemName: "", packingStyle: "", quantity: "", rate: "", gst: "" },
     ],
   });
 
@@ -143,6 +143,7 @@ function GatePassForm() {
       items: [
         ...formInputs.items,
         {
+          boxnumber: "",
           itemName: "",
           packingStyle: "",
           quantity: "",
@@ -205,6 +206,7 @@ function GatePassForm() {
               <Table striped responsive bordered className="mt-2">
                 <thead>
                   <tr>
+                    <td style={{ minWidth: "12rem" }}>Box No.</td>
                     <td style={{ minWidth: "12rem" }}>Item Name</td>
                     <td style={{ minWidth: "12rem" }}>Packing Style</td>
                     <td style={{ minWidth: "6rem" }}>Quantity</td>
@@ -216,6 +218,15 @@ function GatePassForm() {
                 <tbody>
                   {formInputs.items.map((item, index) => (
                     <tr key={index}>
+                      <td>
+                        <Form.Control
+                          type="text"
+                          placeholder="Enter Box Number"
+                          name="boxnumber"
+                          value={item.boxnumber}
+                          onChange={(e) => handleItemChange(index, e)}
+                        />
+                      </td>
                       <td>
                         <Form.Control
                           type="text"
@@ -309,7 +320,7 @@ function GatePassForm() {
           <button className="btn btn-primary rounded">Gate Pass List</button>
         </Link>
       </div>
-      <div className="d-none">
+      <div className="">
         <GatePassLayout formData={formInputs} ref={generatePDFButtonRef} />
       </div>
     </Container>

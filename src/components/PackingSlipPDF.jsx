@@ -14,7 +14,7 @@ import {
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-const GatePassLayout = forwardRef(({ formData }, ref) => {
+const PackingSlipPDF = forwardRef(({ formData }, ref) => {
   // Calculate total quantity dynamically
   const totalQuantity = formData.items.reduce(
     (total, item) => total + parseInt(item.quantity, 10),
@@ -109,8 +109,8 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
                     <tr>
                       <td colSpan={2}></td>
                       <td>Total</td>
-                      <td></td>
-                      <td colSpan={3}>{totalQuantity}</td>
+                      <td>{totalQuantity}</td>
+                      <td colSpan={3}></td>
                     </tr>
                     <tr>
                       <td rowSpan={5}>Account's approval</td>
@@ -155,4 +155,4 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
   );
 });
 
-export default GatePassLayout;
+export default PackingSlipPDF;

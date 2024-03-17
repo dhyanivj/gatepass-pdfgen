@@ -38,14 +38,17 @@ body {
 }
 
 #gatePassTablelayout td,
-#newgatePassTable td{
+#newgatePassTable td,
+#packingslipLayout td
+{
     padding-left: 5px;
     vertical-align: super;
 }
 
 
 #gatePassTablelayout tr td,
-#newgatePassTable tr td {
+#newgatePassTable tr td,
+#packingslipLayout tr td {
     border: 1px solid black;
   }
 

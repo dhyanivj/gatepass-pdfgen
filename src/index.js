@@ -64,7 +64,7 @@ const App = () => {
         },
         {
             path: "/gatepasslist",
-            element: <GatePassList />,
+            element: authenticated ? <GatePassList /> : <LoginForm setAuthenticated={setAuthenticated} />,
         },
     ]);
 
