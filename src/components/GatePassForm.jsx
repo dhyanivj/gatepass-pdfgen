@@ -46,7 +46,18 @@ function GatePassForm() {
     const { name, value } = e.target;
     setFormInputs({ ...formInputs, [name]: value });
   };
-
+  // const resetFormInputs = () => {
+  //   setFormInputs({
+  //     partyName: "",
+  //     GPNo: gpNumber, // Keep the current GP number
+  //     date: "",
+  //     gpcomment: "",
+  //     items: [
+  //       { itemName: "", packingStyle: "", quantity: "", rate: "", gst: "" },
+  //     ],
+  //   });
+  // };
+  
   const handleSubmit = async (e) => {
     setLoading(true); 
     e.preventDefault();
@@ -79,9 +90,9 @@ function GatePassForm() {
     generatePDF();
     setLoading(false);
     // Reload the page after a delay to allow time for PDF download
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 1000); // Adjust the delay as needed
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000); // Adjust the delay as needed
   };
 
   const generatePDF = async () => {
@@ -105,6 +116,7 @@ function GatePassForm() {
       // Upload the PDF blob to Firebase Storage
       await pdfFileRef.put(pdfBlob);
       console.log("PDF uploaded to Firebase Storage");
+      // resetFormInputs();
 
       // Trigger the "Generate PDF" button click in GatePassLayout
       if (generatePDFButtonRef.current) {
