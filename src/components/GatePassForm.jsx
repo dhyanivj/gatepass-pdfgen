@@ -24,7 +24,7 @@ function GatePassForm() {
   useEffect(() => {
     // Set up a real-time listener for GP number
     const unsubscribe = db
-      .collection("prod-gpnumber")
+      .collection("auto-gpnumber")
       .doc("doc-gpnumber")
       .onSnapshot((doc) => {
         if (doc.exists) {
@@ -77,7 +77,7 @@ function GatePassForm() {
         // Add other data as needed
       });
 
-      await db.collection("prod-gpnumber").doc("doc-gpnumber").update({
+      await db.collection("auto-gpnumber").doc("doc-gpnumber").update({
         gpnumber: updatedGPNo,
       });
 
