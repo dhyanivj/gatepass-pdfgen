@@ -79,9 +79,9 @@ function GatePassForm() {
     generatePDF();
     setLoading(false);
     // Reload the page after a delay to allow time for PDF download
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000); // Adjust the delay as needed
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 1000); // Adjust the delay as needed
   };
 
   const generatePDF = async () => {

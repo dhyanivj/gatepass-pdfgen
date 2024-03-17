@@ -1,3 +1,5 @@
+// This page is for local PDF download 
+
 import React, { forwardRef } from "react";
 import {
   Container,
@@ -34,7 +36,7 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
       useCss: true,
     });
 
-    const pdfName = `${GPNo}-${partyName}-GatePass.pdf`;
+    const pdfName = `${GPNo - 1}-${partyName}-GatePass.pdf`;
 
     // Save the PDF with a specific name
     pdfDoc.save(pdfName);
@@ -68,7 +70,7 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
                       GATE PASS
                     </td>
                     <td>GP NO.</td>
-                    <td>{formData.GPNo}</td>
+                    <td>{formData.GPNo - 1}</td>
                   </tr>
                   <tr>
                     <td>Date</td>
