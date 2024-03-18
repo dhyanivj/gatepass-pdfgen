@@ -796,7 +796,7 @@ function GatePassList() {
                   {gatePass.comment}
                 </td>
                 <td rowSpan={5}>Gate approval</td>
-                <td colSpan={3}>Delivered By</td>
+                <td colSpan={3}>Received By</td>
               </tr>
               <tr>
                 <td>Name .......</td>

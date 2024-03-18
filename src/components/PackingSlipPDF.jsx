@@ -117,7 +117,7 @@ const PackingSlipPDF = forwardRef(({ formData }, ref) => {
                       <td>Delivered By</td>
                       <td rowSpan={5} className="text-center align-middle gate-pass-cell gatepasstext gpcomment-pdffield">{formData.gpcomment}</td>
                       <td rowSpan={5}>Gate approval</td>
-                      <td colSpan={3}>Delivered By</td>
+                      <td colSpan={3}>Received By</td>
                     </tr>
                     <tr>
                       <td>Name .......</td>

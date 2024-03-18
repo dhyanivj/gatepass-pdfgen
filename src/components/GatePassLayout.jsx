@@ -1,4 +1,4 @@
-// This page is for local PDF download 
+// This page is for local PDF download
 
 import React, { forwardRef } from "react";
 import {
@@ -53,8 +53,7 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
     .join("-");
   return (
     // hide for prod -- all items edit PDF table layout
-    <Container> 
-      
+    <Container>
       <Card className="my-5">
         <CardBody>
           <Form>
@@ -115,9 +114,14 @@ const GatePassLayout = forwardRef(({ formData }, ref) => {
                     <tr>
                       <td rowSpan={5}>Account's approval</td>
                       <td>Delivered By</td>
-                      <td rowSpan={5} className="text-center align-middle gate-pass-cell gatepasstext gpcomment-pdffield">{formData.gpcomment}</td>
+                      <td
+                        rowSpan={5}
+                        className="text-center align-middle gate-pass-cell gatepasstext gpcomment-pdffield"
+                      >
+                        {formData.gpcomment}
+                      </td>
                       <td rowSpan={5}>Gate approval</td>
-                      <td colSpan={3}>Delivered By</td>
+                      <td colSpan={3}>Received By</td>
                     </tr>
                     <tr>
                       <td>Name .......</td>
