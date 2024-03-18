@@ -15,9 +15,16 @@ function GatePassForm() {
     partyName: "",
     GPNo: "", // Use GPNo from state
     date: "",
-    gpcomment:"",
+    gpcomment: "",
     items: [
-      {boxnumber: "", itemName: "", packingStyle: "", quantity: "", rate: "", gst: "" },
+      {
+        boxnumber: "",
+        itemName: "",
+        packingStyle: "",
+        quantity: "",
+        rate: "",
+        gst: "",
+      },
     ],
   });
 
@@ -57,9 +64,9 @@ function GatePassForm() {
   //     ],
   //   });
   // };
-  
+
   const handleSubmit = async (e) => {
-    setLoading(true); 
+    setLoading(true);
     e.preventDefault();
 
     // Increment GP number locally before updating in Firestore
@@ -149,7 +156,7 @@ function GatePassForm() {
           quantity: "",
           rate: "",
           gst: "",
-          gpComment:"",
+          gpComment: "",
         },
       ],
     });
@@ -301,12 +308,14 @@ function GatePassForm() {
                   type="submit"
                   className="ml-2 rounded-pill"
                 >
-                
-                {loading && (
-        <div className="spinner-border text-white downloading-spinner" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      )}
+                  {loading && (
+                    <div
+                      className="spinner-border text-white downloading-spinner"
+                      role="status"
+                    >
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  )}
                   Download PDF
                 </Button>
               </div>
@@ -320,7 +329,7 @@ function GatePassForm() {
           <button className="btn btn-primary rounded">Gate Pass List</button>
         </Link>
       </div>
-      <div className="">
+      <div className="d-none">
         <GatePassLayout formData={formInputs} ref={generatePDFButtonRef} />
       </div>
     </Container>
