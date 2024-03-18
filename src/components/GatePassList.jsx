@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { db, storage } from "../firebase";
-import { Button, Table, Modal, Form, Container } from "react-bootstrap";
+import {
+  Button,
+  Table,
+  Modal,
+  Form,
+  Container,
+  Pagination,
+} from "react-bootstrap";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import EditedPdfLayout from "./EditedPdfLayout";
@@ -16,7 +23,19 @@ function GatePassList() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editedGatePass, setEditedGatePass] = useState(null);
   const [editedDate, setEditedDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10); // Number of items per page
+  // const [gatePasses] = useState([...]); // Your gate passes data
+  const totalPages = Math.ceil(gatePasses.length / pageSize);
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const visibleGatePasses = gatePasses.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
   const [editedForm, setEditedForm] = useState({
     partyName: "",
     GPNo: "",
@@ -368,7 +387,7 @@ function GatePassList() {
             </tr>
           </thead>
           <tbody>
-            {gatePasses.map((gatePass) => (
+            {visibleGatePasses.map((gatePass) => (
               <tr key={gatePass.id}>
                 <td>
                   <Form.Check
@@ -471,6 +490,29 @@ function GatePassList() {
             ))}
           </tbody>
         </Table>
+        <div className="d-flex justify-content-center my-2">
+          <Pagination>
+            <Pagination.First onClick={() => handlePageChange(1)} />
+            <Pagination.Prev
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            />
+            {[...Array(totalPages)].map((_, index) => (
+              <Pagination.Item
+                key={index + 1}
+                active={index + 1 === currentPage}
+                onClick={() => handlePageChange(index + 1)}
+              >
+                {index + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            />
+            <Pagination.Last onClick={() => handlePageChange(totalPages)} />
+          </Pagination>
+        </div>
       </Container>
 
       {/* Modal for displaying item details */}
