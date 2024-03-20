@@ -275,19 +275,8 @@ function GatePassList() {
       console.error("Error updating delivery status:", error);
     }
   };
-  const downloadPackingSlip = async (gatePassId) => {
+  const downloadPackingSlip = async (gatePass) => {
     try {
-      // Fetch gate pass data from Firestore
-      const gatePassDoc = await db
-        .collection("gatePasses")
-        .doc(gatePassId)
-        .get();
-      if (!gatePassDoc.exists) {
-        console.error("Gate pass not found");
-        return;
-      }
-      const gatePass = gatePassDoc.data();
-
       // Create a new jsPDF instance
       const pdfDoc = new jsPDF({
         orientation: "landscape",
@@ -295,7 +284,7 @@ function GatePassList() {
 
       // Add packing slip content to the PDF using autoTable
       pdfDoc.autoTable({
-        html: "#packingslipLayout", // Use the same table ID for packing slip
+        html: `#packingslipLayout`,
         theme: "grid",
         useCss: true,
       });
@@ -436,7 +425,7 @@ function GatePassList() {
                   {" "}
                   <button
                     className="btn btn-primary"
-                    onClick={() => downloadPackingSlip(gatePass.id)}
+                    onClick={() => downloadPackingSlip(gatePass)}
                   >
                     Download Packing Slip
                   </button>
@@ -716,106 +705,109 @@ function GatePassList() {
       {/* ------------------ statrt ------------- */}
       <div className="d-none">
         {gatePasses.map((gatePass) => (
-          <table border={1} id="packingslipLayout" key={gatePass.id}>
-            <tr>
-              <td
-                rowSpan={2}
-                colSpan={4}
-                className="text-center align-middle gate-pass-cell  gatepasstext"
-              >
-                PACKING SLIP
-              </td>
-              <td>PS NO.</td>
-              <td colSpan={2}>{gatePass.GPNo}</td>
-            </tr>
-            <tr>
-              <td>Date</td>
-              <td colSpan={2}>
-                {gatePass.date instanceof Date
-                  ? gatePass.date.toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })
-                  : gatePass.date?.toDate()?.toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })}
-              </td>
-            </tr>
+          <div className="d-none" key={gatePass.id}>
+            {/* <table border={1} id={`packingslipLayout-${gatePass.id}`}> */}
+            <table border={1} id="packingslipLayout">
+              <tr>
+                <td
+                  rowSpan={2}
+                  colSpan={4}
+                  className="text-center align-middle gate-pass-cell  gatepasstext"
+                >
+                  PACKING SLIP
+                </td>
+                <td>PS NO.</td>
+                <td colSpan={2}>{gatePass.GPNo}</td>
+              </tr>
+              <tr>
+                <td>Date</td>
+                <td colSpan={2}>
+                  {gatePass.date instanceof Date
+                    ? gatePass.date.toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      })
+                    : gatePass.date?.toDate()?.toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      })}
+                </td>
+              </tr>
 
-            <tbody>
-              <tr>
-                <td
-                  colSpan={7}
-                  className="text-center font-weight-bold gatepasstext"
-                >
-                  <b>{gatePass.partyName}</b>
-                </td>
-              </tr>
-              <tr>
-                <td>S.No.</td>
-                <td>Box Number</td>
-                <td>Item Name</td>
-                <td>Packing Style</td>
-                <td>Qty.</td>
-                <td>Rate</td>
-                <td>GST</td>
-              </tr>
-              {gatePass.items.map((item, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{item.boxnumber}</td>
-                  <td>{item.itemName}</td>
-                  <td>{item.packingStyle}</td>
-                  <td>{item.quantity}</td>
-                  <td>{item.rate}</td>
-                  <td>{item.gst}</td>
+              <tbody>
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="text-center font-weight-bold gatepasstext"
+                  >
+                    <b>{gatePass.partyName}</b>
+                  </td>
                 </tr>
-              ))}
-              <tr>
-                <td colSpan={2}></td>
-                <td>Total</td>
-                <td></td>
-                {/* total quantity */}
-                <td colSpan={3}>
-                  {gatePass.items.reduce(
-                    (total, item) => total + parseInt(item.quantity || 0),
-                    0
-                  )}
-                </td>
-              </tr>
-              <tr>
-                <td rowSpan={5}>Account's approval</td>
-                <td>Delivered By</td>
-                <td
-                  rowSpan={5}
-                  className="text-center align-middle gate-pass-cell gatepasstext gpcomment-pdffield"
-                >
-                  {gatePass.comment}
-                </td>
-                <td rowSpan={5}>Gate approval</td>
-                <td colSpan={3}>Received By</td>
-              </tr>
-              <tr>
-                <td>Name .......</td>
-                <td colSpan={3}>Name ......................</td>
-              </tr>
-              <tr>
-                <td>Phone No. ..............</td>
-                <td colSpan={3}>Phone No. .........</td>
-              </tr>
-              <tr>
-                <td>Signature .............</td>
-                <td colSpan={3}>Signature .........</td>
-              </tr>
-              <tr>
-                <td>Vehicle ........</td>
-                <td colSpan={3}>Stamp .........</td>
-              </tr>
-            </tbody>
-          </table>
+                <tr>
+                  <td>S.No.</td>
+                  <td>Box Number</td>
+                  <td>Item Name</td>
+                  <td>Packing Style</td>
+                  <td>Qty.</td>
+                  <td>Rate</td>
+                  <td>GST</td>
+                </tr>
+                {gatePass.items.map((item, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{item.boxnumber}</td>
+                    <td>{item.itemName}</td>
+                    <td>{item.packingStyle}</td>
+                    <td>{item.quantity}</td>
+                    <td>{item.rate}</td>
+                    <td>{item.gst}</td>
+                  </tr>
+                ))}
+                <tr>
+                  <td colSpan={2}></td>
+                  <td>Total</td>
+                  <td></td>
+                  {/* total quantity */}
+                  <td colSpan={3}>
+                    {gatePass.items.reduce(
+                      (total, item) => total + parseInt(item.quantity || 0),
+                      0
+                    )}
+                  </td>
+                </tr>
+                <tr>
+                  <td rowSpan={5}>Account's approval</td>
+                  <td>Delivered By</td>
+                  <td
+                    rowSpan={5}
+                    className="text-center align-middle gate-pass-cell gatepasstext gpcomment-pdffield"
+                  >
+                    {gatePass.comment}
+                  </td>
+                  <td rowSpan={5}>Gate approval</td>
+                  <td colSpan={3}>Received By</td>
+                </tr>
+                <tr>
+                  <td>Name .......</td>
+                  <td colSpan={3}>Name ......................</td>
+                </tr>
+                <tr>
+                  <td>Phone No. ..............</td>
+                  <td colSpan={3}>Phone No. .........</td>
+                </tr>
+                <tr>
+                  <td>Signature .............</td>
+                  <td colSpan={3}>Signature .........</td>
+                </tr>
+                <tr>
+                  <td>Vehicle ........</td>
+                  <td colSpan={3}>Stamp .........</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         ))}
       </div>
       {/* ------------------ ENd ------------- */}

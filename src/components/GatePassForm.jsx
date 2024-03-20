@@ -329,6 +329,15 @@ function GatePassForm() {
           <button className="btn btn-primary rounded">Gate Pass List</button>
         </Link>
       </div>
+      <div className="my">
+        <div
+          class="alert alert-warning alert-dismissible fade show alertinfo"
+          role="alert"
+        >
+          <strong>UPDATE!</strong> Download Packing Slip is now working for all
+          PDF
+        </div>
+      </div>
       <div className="d-none">
         <GatePassLayout formData={formInputs} ref={generatePDFButtonRef} />
       </div>
