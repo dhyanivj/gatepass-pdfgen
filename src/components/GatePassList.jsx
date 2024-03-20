@@ -284,7 +284,8 @@ function GatePassList() {
 
       // Add packing slip content to the PDF using autoTable
       pdfDoc.autoTable({
-        html: `#packingslipLayout`,
+        html: `#packingslipLayout-${gatePass.id}`,
+
         theme: "grid",
         useCss: true,
       });
@@ -705,9 +706,8 @@ function GatePassList() {
       {/* ------------------ statrt ------------- */}
       <div className="d-none">
         {gatePasses.map((gatePass) => (
-          <div className="d-none" key={gatePass.id}>
-            {/* <table border={1} id={`packingslipLayout-${gatePass.id}`}> */}
-            <table border={1} id="packingslipLayout">
+          <div className="d-none packingslipLayout" key={gatePass.id}>
+            <table border={1} id={`packingslipLayout-${gatePass.id}`}>
               <tr>
                 <td
                   rowSpan={2}
